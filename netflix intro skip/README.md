@@ -36,7 +36,7 @@ Temporary Firefox add-ons are removed when Firefox restarts.
 
 ### Permanent installation
 
-For a normal permanent Firefox installation, the extension must be signed by Mozilla (for example, after submitting it to addons.mozilla.org). The manifest already contains a stable Gecko ID and the required `data_collection_permissions` declaration for signing.
+Firefox: https://addons.mozilla.org/en-US/firefox/addon/netflix-auto-skip-intro/
 
 ## How it works
 
