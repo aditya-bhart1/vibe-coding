@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digit Drawing Canvas</title>
+<style>
+  body { font-family: sans-serif; text-align: center; background: #1e1e1e; color: #eee; padding: 20px; }
+  canvas { border: 2px solid #888; background: black; cursor: crosshair; touch-action: none; }
+  button { margin: 8px 4px; padding: 8px 14px; font-size: 14px; cursor: pointer; }
+  textarea { width: 90%; max-width: 500px; height: 140px; margin-top: 10px; font-family: monospace; font-size: 12px; box-sizing: border-box; background: #111; color: #eee; border: 1px solid #666; padding: 8px; }
+  #preview { image-rendering: pixelated; border: 1px solid #555; margin-top: 10px; }
+  #about {
+    position: fixed;
+    top: 120px;
+    left: 24px;
+    width: 230px;
+    padding: 14px;
+    box-sizing: border-box;
+    border-left: 2px solid #666;
+    color: #ccc;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left;
+  }
+  #about h4 { margin: 0 0 8px; color: #fff; font-size: 16px; }
+  #copyStatus { min-height: 1.2em; margin: 6px auto 0; color: #bbb; font-size: 13px; }
+  @media (max-width: 1050px) {
+    #about {
+      position: static;
+      width: 90%;
+      max-width: 500px;
+      margin: 0 auto 22px;
+    }
+  }
+</style>
+</head>
+<body>
+<aside id="about">
+  <h4>What is this app for?</h4>
+  Draw a handwritten digit from 0 to 9 and convert it into pixel data for a Python model. The drawing is reduced to a 20×20 grayscale image, with pixel values normalized between 0 and 1.
+  <br><br>
+  Use the resulting NumPy array to test a handwritten-digit recognition neural network. The output contains one row of 400 values, representing the 20×20 pixels. You can edit the array or change its variable name before copying it into your Python code.
+</aside>
+
+<h3>Draw a digit (0-9)</h3>
+<canvas id="draw" width="280" height="280"></canvas><br>
+<button onclick="clearCanvas()">Clear</button>
+<button onclick="generateArray()">Convert to 20x20 array</button>
+<button onclick="copyOutput()">Copy array</button>
+<br>
+<canvas id="preview" width="100" height="100"></canvas>
+<br>
+<textarea id="output" spellcheck="false" placeholder="Pixel array will appear here. You can edit it before copying..."></textarea>
+<div id="copyStatus" role="status" aria-live="polite"></div>
+
+<script>
+const canvas = document.getElementById('draw');
+const ctx = canvas.getContext('2d');
+ctx.fillStyle = 'black';
+ctx.fillRect(0, 0, 280, 280);
+ctx.strokeStyle = 'white';
+ctx.lineWidth = 16;
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+
+let drawing = false;
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  return { x, y };
+}
+
+function start(e) {
+  drawing = true;
+  const p = getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(p.x, p.y);
+  e.preventDefault();
+}
+
+function move(e) {
+  if (!drawing) return;
+  const p = getPos(e);
+  ctx.lineTo(p.x, p.y);
+  ctx.stroke();
+  e.preventDefault();
+}
+
+function end() { drawing = false; }
+
+canvas.addEventListener('mousedown', start);
+canvas.addEventListener('mousemove', move);
+canvas.addEventListener('mouseup', end);
+canvas.addEventListener('mouseleave', end);
+canvas.addEventListener('touchstart', start);
+canvas.addEventListener('touchmove', move);
+canvas.addEventListener('touchend', end);
+
+function clearCanvas() {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, 280, 280);
+  document.getElementById('output').value = '';
+  document.getElementById('copyStatus').textContent = '';
+  const pctx = document.getElementById('preview').getContext('2d');
+  pctx.clearRect(0, 0, 100, 100);
+}
+
+async function copyOutput() {
+  const output = document.getElementById('output');
+  const status = document.getElementById('copyStatus');
+
+  if (!output.value.trim()) {
+    status.textContent = 'Convert a digit first, or enter an array to copy.';
+    return;
+  }
+
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(output.value);
+    } else {
+      throw new Error('Clipboard API unavailable');
+    }
+    status.textContent = 'Array copied to clipboard.';
+  } catch (error) {
+    // Fallback for browsers that do not allow clipboard access on local files.
+    try {
+      output.focus();
+      output.select();
+      const copied = document.execCommand('copy');
+      output.setSelectionRange(output.value.length, output.value.length);
+      if (!copied) throw new Error('Copy command failed');
+      status.textContent = 'Array copied to clipboard.';
+    } catch (fallbackError) {
+      status.textContent = 'Copy failed. Select the array and copy it manually.';
+    }
+  }
+}
+
+async function generateArray() {
+  // Downsample 280x280 to 20x20 using a temporary canvas.
+  const tmp = document.createElement('canvas');
+  tmp.width = 20;
+  tmp.height = 20;
+  const tctx = tmp.getContext('2d');
+  tctx.imageSmoothingEnabled = true;
+  tctx.drawImage(canvas, 0, 0, 20, 20);
+  const imgData = tctx.getImageData(0, 0, 20, 20).data;
+
+  const values = [];
+  for (let i = 0; i < 400; i++) {
+    const idx = i * 4;
+    // White on black: the red channel is the grayscale value. Normalize it to 0-1.
+    const gray = imgData[idx] / 255;
+    values.push(gray.toFixed(4));
+  }
+
+  document.getElementById('output').value =
+    'x_test = np.array([[' + values.join(', ') + ']])';
+
+  // Show a scaled-up preview of the 20x20 result.
+  const pctx = document.getElementById('preview').getContext('2d');
+  pctx.imageSmoothingEnabled = false;
+  pctx.clearRect(0, 0, 100, 100);
+  pctx.drawImage(tmp, 0, 0, 100, 100);
+
+  // Generate and copy the array in one click.
+  await copyOutput();
+}
+</script>
+</body>
+</html>
