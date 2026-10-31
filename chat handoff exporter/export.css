@@ -1,0 +1,52 @@
+:root { color-scheme: light dark; --bg:#101722; --panel:#182231; --text:#f3f6fb; --muted:#a9b5c7; --accent:#9bbfff; --border:#35445b; --warning:#f0c36a; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+.app { max-width:1000px; margin:0 auto; padding:30px 22px 70px; }
+.app-header { display:flex; gap:14px; align-items:center; margin-bottom:24px; }
+.brand-mark { display:grid; place-items:center; width:45px; height:45px; border-radius:13px; background:#2b4162; color:#c9ddff; font-size:27px; font-weight:750; }
+h1 { font-size:22px; margin:0 0 4px; letter-spacing:-.5px; }
+.app-header p { margin:0; color:var(--muted); }
+.status-card,.warning-panel,.error-panel { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:16px; }
+.status-line { display:flex; gap:14px; justify-content:space-between; align-items:center; font-weight:650; }
+#percent { color:var(--accent); font-variant-numeric:tabular-nums; }
+.track { height:8px; background:#2b3647; border-radius:99px; margin:14px 0 10px; overflow:hidden; }
+.progress-bar { height:100%; width:0%; border-radius:99px; background:#9bbfff; transition:width .18s ease; }
+#details { color:var(--muted); font-size:13px; margin:0; }
+.warning-panel { border-color:#7d6735; }
+.warning-panel h2,.error-panel h2 { font-size:16px; margin:0 0 8px; }
+.warning-panel ul { margin:0; padding-left:21px; color:#f2d99b; }
+.error-panel { border-color:#854e59; }
+.error-panel p { margin:8px 0 0; color:var(--muted); }
+.preview-top { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin:30px 0 18px; }
+.eyebrow { letter-spacing:1.4px; font-size:11px; font-weight:800; color:#78d1a3; margin:0 0 5px; }
+.preview-top h2 { margin:0; font-size:24px; overflow-wrap:anywhere; }
+#messageCount { color:var(--muted); margin:5px 0 0; }
+.actions { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
+button { border:0; border-radius:9px; background:#b5d0ff; color:#102036; padding:10px 14px; font:inherit; font-weight:750; cursor:pointer; white-space:nowrap; }
+button.secondary { background:#27364a; color:#e8eff9; border:1px solid var(--border); }
+.transcript { background:#fff; color:#171b23; border-radius:12px; padding:34px; box-shadow:0 8px 30px #0002; }
+.transcript h1 { font-size:27px; margin:0 0 5px; }
+.transcript .meta { color:#576170; font-size:12px; margin:0 0 7px; overflow-wrap:anywhere; }
+.transcript .rule { border:0; border-top:1px solid #d8dee8; margin:22px 0; }
+.message { margin:0 0 22px; page-break-inside:avoid; break-inside:avoid; }
+.message-label { font-weight:800; font-size:12px; letter-spacing:.4px; text-transform:uppercase; margin:0 0 7px; }
+.message.user .message-label { color:#175d9f; }
+.message.assistant .message-label { color:#27714e; }
+.message-body { white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; font-size:13px; line-height:1.6; margin:0; font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace; }
+@media (prefers-color-scheme: light) { :root { --bg:#f5f7fb; --panel:#fff; --text:#162235; --muted:#596a81; --accent:#2468cf; --border:#d7dfeb; } .brand-mark { background:#dceaff; color:#164b91; } .track { background:#e2e9f3; } button.secondary { background:#fff; color:#27364a; } }
+@media (max-width:700px) { .app { padding:20px 12px 40px; } .preview-top { display:block; } .actions { justify-content:flex-start; margin-top:15px; } .transcript { padding:20px 15px; } }
+@page { size:auto; margin:17mm 15mm; }
+@media print {
+  :root { color-scheme:light; }
+  body { background:#fff !important; color:#111 !important; font-size:10pt; }
+  .app { max-width:none; padding:0; margin:0; }
+  .no-print,.preview-top { display:none !important; }
+  #previewPanel { display:block !important; }
+  .transcript { background:#fff !important; color:#111 !important; box-shadow:none; border-radius:0; padding:0; }
+  .transcript h1 { font-size:20pt; }
+  .message { page-break-inside:avoid; break-inside:avoid; margin-bottom:13mm; }
+  .message-body { font-size:9pt; line-height:1.45; overflow-wrap:anywhere; }
+  .message-label { font-size:9pt; }
+  .meta { font-size:8pt !important; }
+  a { color:inherit; text-decoration:none; }
+}

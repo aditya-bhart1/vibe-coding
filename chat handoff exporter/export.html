@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Preparing transcript…</title>
+  <link rel="stylesheet" href="export.css">
+</head>
+<body>
+  <main id="app" class="app">
+    <header class="app-header no-print">
+      <div class="brand-mark">↗</div>
+      <div>
+        <h1>Preparing your transcript</h1>
+        <p id="subtitle">Reading the conversation in the source tab.</p>
+      </div>
+    </header>
+    <section class="status-card no-print" aria-live="polite">
+      <div class="status-line"><span id="statusText">Connecting to the chat…</span><strong id="percent">0%</strong></div>
+      <div class="track"><div id="progressBar" class="progress-bar"></div></div>
+      <p id="details">This runs in your browser. Do not close this tab until scanning finishes.</p>
+    </section>
+    <section id="warningPanel" class="warning-panel no-print" hidden>
+      <h2>Review before using this transcript</h2>
+      <ul id="warningList"></ul>
+    </section>
+    <section id="previewPanel" hidden>
+      <div class="preview-top no-print">
+        <div><p class="eyebrow">EXPORT READY</p><h2 id="documentTitle">Conversation transcript</h2><p id="messageCount"></p></div>
+        <div class="actions"><button id="downloadText" type="button">Download TXT</button><button id="printAgain" type="button" class="secondary">Print / Save PDF</button></div>
+      </div>
+      <article id="transcript" class="transcript"></article>
+    </section>
+    <section id="errorPanel" class="error-panel no-print" hidden>
+      <h2>Could not export this conversation</h2>
+      <p id="errorText"></p>
+      <p>Reload the source chat, wait for it to finish loading, and try again. If this keeps happening, the site's page structure may have changed.</p>
+    </section>
+  </main>
+  <script src="export.js"></script>
+</body>
+</html>

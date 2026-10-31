@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chat Handoff Exporter</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="logo" aria-hidden="true">↗</div>
+      <div>
+        <h1>Chat Handoff Exporter</h1>
+        <p class="subtitle">Take a conversation with you.</p>
+      </div>
+    </header>
+
+    <section class="site-card" aria-live="polite">
+      <span class="site-dot" aria-hidden="true"></span>
+      <div>
+        <strong id="siteName">Checking current tab…</strong>
+        <p id="siteHint">Open a ChatGPT or Claude conversation first.</p>
+      </div>
+    </section>
+
+    <fieldset>
+      <legend>Export format</legend>
+      <label class="format-option">
+        <input type="radio" name="format" value="txt" checked>
+        <span class="file-icon">TXT</span>
+        <span><strong>Text file</strong><small>Easy to paste into another AI</small></span>
+      </label>
+      <label class="format-option">
+        <input type="radio" name="format" value="pdf">
+        <span class="file-icon pdf">PDF</span>
+        <span><strong>PDF document</strong><small>Opens the browser print dialog</small></span>
+      </label>
+    </fieldset>
+
+    <button id="exportButton" type="button" disabled>Export conversation</button>
+    <p class="privacy"><span aria-hidden="true">●</span> Runs locally. Your transcript is not sent to us or another server.</p>
+    <p class="footnote">For the most complete export, leave the conversation open and wait for scanning to finish. Very long chats may take a little longer.</p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

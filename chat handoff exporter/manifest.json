@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Chat Handoff Exporter",
+  "version": "1.0.0",
+  "description": "Export ChatGPT and Claude conversations as a text transcript or a printable PDF, locally in your browser.",
+  "permissions": ["activeTab", "tabs"],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://claude.ai/*"
+  ],
+  "action": {
+    "default_title": "Export AI chat",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "chat-handoff-exporter@local",
+      "strict_min_version": "109.0"
+    }
+  }
+}
